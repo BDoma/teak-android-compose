@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import teak.framework.core.TeakComponent
 import teak.framework.core.TeakComponentContract
 
+@Deprecated("Use TeakUtils.WithTeak()")
 class TeakComposeComponent<Model : Any, Msg : Any> {
     private lateinit var component: TeakComponent<Model, Msg>
 
