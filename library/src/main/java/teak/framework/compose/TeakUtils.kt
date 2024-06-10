@@ -1,23 +1,35 @@
 package teak.framework.compose
 
-import androidx.compose.runtime.*
-import teak.framework.core.runtime.TeakRuntime
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
 fun <Model: Any, Msg: Any> WithTeak(
     init: () -> Pair<Model, List<() -> Msg>>,
     update: (Model, Msg) -> Pair<Model, List<() -> Msg>>,
     content: @Composable (Model, (Msg) -> Unit) -> Unit
-){
-    var model by remember { mutableStateOf(init().first) }
-    var dispatch : (Msg) -> Unit by remember { mutableStateOf({}) }
-    remember {
-        mutableStateOf(
-            TeakRuntime(init, view = { newModel, newDispatch ->
-                model = newModel
-                dispatch = newDispatch
-            }, update)
-        )
+) = TeakWithViewModel(init = init, update = update, view = content)
+
+@Composable
+private fun <Model : Any, Msg> TeakWithViewModel(
+    init: () -> Pair<Model, List<() -> Msg>>,
+    update: (model: Model, message: Msg) -> Pair<Model, List<() -> Msg>>,
+    view: @Composable (Model, (Msg) -> Unit) -> Unit,
+    viewModel: TeakViewModel<Model, Msg> = teakViewModel(init, update)
+) {
+    ShowWhenTeakCreated(viewModel = viewModel) { model, dispatch ->
+        view(model, dispatch)
     }
-    content(model, dispatch)
+}
+
+@Composable
+private fun <Model : Any, Msg, VM : TeakViewModel<Model, Msg>> ShowWhenTeakCreated(
+    viewModel: VM,
+    content: @Composable (Model, (Msg) -> Unit) -> Unit
+) {
+    val uiState by viewModel.state.collectAsState()
+    uiState.first?.let { model ->
+        content(model, uiState.second)
+    }
 }
