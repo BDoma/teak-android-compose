@@ -41,5 +41,6 @@ class TeakViewModel<Model : Any, Msg>(
 @Composable
 inline fun <reified VM : ViewModel, Model: Any, Msg> teakViewModel(
     noinline init: () -> Pair<Model, List<() -> Msg>>,
-    noinline update: (model: Model, message: Msg) -> Pair<Model, List<() -> Msg>>
-): VM = viewModel(factory = TeakViewModel.createFactory(init, update))
+    noinline update: (model: Model, message: Msg) -> Pair<Model, List<() -> Msg>>,
+    key: String? = null): VM =
+    viewModel(key = key, factory = TeakViewModel.createFactory(init, update))
