@@ -3,6 +3,9 @@ package teak.framework.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import teak.framework.android.TeakViewModel
 
 @Composable
 fun <Model: Any, Msg: Any> WithTeak(
@@ -42,3 +45,11 @@ private fun <Model : Any, Msg, VM : TeakViewModel<Model, Msg>> ShowWhenTeakCreat
         content(model, uiState.second)
     }
 }
+
+
+@Composable
+inline fun <reified VM : ViewModel, Model: Any, Msg> teakViewModel(
+    noinline init: () -> Pair<Model, List<() -> Msg>>,
+    noinline update: (model: Model, message: Msg) -> Pair<Model, List<() -> Msg>>,
+    key: String? = null): VM =
+    viewModel(key = key, factory = TeakViewModel.createFactory(init, update))
