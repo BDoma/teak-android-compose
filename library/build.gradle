@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'teak.framework.compose'
-version = '1.1'
+version = '1.5'
 
 android {
     namespace "$group"
@@ -14,7 +14,7 @@ android {
         buildToolsVersion = '33.0.1'
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 2
+        versionCode 3
         versionName "$version"
     }
 
@@ -57,7 +57,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'teak.framework.compose'
                 artifactId = 'teak-android-compose-extension'
-                version = '1.1'
+                version = '1.5'
             }
         }
     }
